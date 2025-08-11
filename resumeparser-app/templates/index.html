@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobSniffer - Interactive Menu</title>
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f9f9f9;
+            --bg-tertiary: #f0f0f0;
+            --text-primary: #000000;
+            --text-secondary: #4a4a4a;
+            --accent-primary: #000000;
+            --accent-secondary: #333333;
+            --border-color: #e0e0e0;
+            --card-bg: #ffffff;
+            --upload-bg: #f9f9f9;
+            --shadow-color: rgba(0, 0, 0, 0.05);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #121212;
+            --bg-secondary: #1e1e1e;
+            --bg-tertiary: #2a2a2a;
+            --text-primary: #ffffff;
+            --text-secondary: #b3b3b3;
+            --accent-primary: #ffffff;
+            --accent-secondary: #cccccc;
+            --border-color: #333333;
+            --card-bg: #1e1e1e;
+            --upload-bg: #2a2a2a;
+            --shadow-color: rgba(0, 0, 0, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-primary);
+            min-height: 100vh;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+            position: relative;
+        }
+
+        .logo-link {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: block;
+            z-index: 10;
+        }
+
+        .logo-image {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .menu-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 40px;
+            position: relative;
+            margin-top: 40px;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: var(--accent-primary);
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            margin-bottom: 80px;
+            text-align: center;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--accent-primary);
+            color: var(--bg-primary);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 9999px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .theme-toggle:hover {
+            opacity: 0.9;
+        }
+
+        .section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease-out;
+            margin-bottom: 100px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 60px;
+        }
+
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section.reverse {
+            flex-direction: row-reverse;
+        }
+
+        .section-content {
+            flex: 1;
+        }
+
+        .section h2 {
+            color: var(--accent-primary);
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+            font-weight: 600;
+        }
+
+        .section p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .section-media {
+            flex: 1;
+            max-width: 500px;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .section-media:hover {
+            box-shadow: 0 10px 20px var(--shadow-color);
+        }
+
+        .section-media img,
+        .section-media gif {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .features h3 {
+            color: var(--accent-primary);
+            margin-bottom: 30px;
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        .feature-list {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            line-height: 1.8;
+            list-style: none;
+            columns: 2;
+            gap: 40px;
+        }
+
+        .feature-list li {
+            margin: 15px 0;
+            padding-left: 30px;
+            position: relative;
+            break-inside: avoid;
+        }
+
+        .feature-list li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--accent-primary);
+            font-size: 1.5rem;
+        }
+
+        .try-btn {
+            background: var(--accent-primary);
+            color: var(--bg-primary);
+            padding: 16px 40px;
+            border: none;
+            border-radius: 9999px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: block;
+            margin: 80px auto 0;
+            width: fit-content;
+            font-weight: 600;
+        }
+
+        .try-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .try-btn.small {
+            padding: 12px 30px;
+            font-size: 1.2rem;
+            margin-top: 20px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body data-theme="light">
+    <a href="/" class="logo-link">
+        <img src="/static/images/logo.png" alt="Logo" class="logo-image"> <!-- Replace with your image path -->
+    </a>
+    <button class="theme-toggle" id="themeToggle">Toggle Theme</button>
+    <div class="menu-container">
+        <div class="logo">👃</div>
+        <h1>JobSniffer</h1>
+        <p class="subtitle">AI-Powered Resume Parser and Job Recommendation Tool</p>
+
+        <div class="section" id="about">
+            <div class="section-content">
+                <h2>About JobSniffer</h2>
+                <p>JobSniffer is a cutting-edge resume parsing tool that uses AI to extract key information from your resumes, identify relevant skills, experience, and education, and provide personalized job recommendations. Upload your resume in PDF, DOCX, or TXT format and let our advanced algorithms do the work!</p>
+            </div>
+            <div class="section-media">
+                <!-- Placeholder for GIF/Image: About section visual, e.g., AI processing animation -->
+                <img src="https://via.placeholder.com/400x300?text=AI+Parsing+GIF" alt="AI Resume Parsing Animation">
+            </div>
+        </div>
+
+        <div class="section reverse" id="how-it-works">
+            <div class="section-content">
+                <h2>How It Works</h2>
+                <p>1. Upload your resume<br>2. Our AI extracts contact info, skills, experience, and education<br>3. Get job-relevant keywords and insights<br>4. Search for jobs with one click<br>5. Save and manage multiple resumes (with account)</p>
+            </div>
+            <div class="section-media">
+                <!-- Placeholder for GIF/Image: Step-by-step process animation -->
+                <img src="https://via.placeholder.com/400x300?text=Process+Flow+GIF" alt="Resume Upload Process">
+            </div>
+        </div>
+
+        <div class="section features" id="features">
+            <div class="section-content">
+                <h3>Key Features</h3>
+                <ul class="feature-list">
+                    <li>AI-powered resume parsing</li>
+                    <li>Job-relevant keyword extraction</li>
+                    <li>One-click job searching on multiple platforms</li>
+                    <li>Personalized job recommendations</li>
+                    <li>Resume analytics & insights</li>
+                    <li>Secure & private storage with Google login</li>
+                </ul>
+            </div>
+            <div class="section-media">
+                <!-- Placeholder for GIF/Image: Features showcase -->
+                <img src="https://via.placeholder.com/400x300?text=Features+Demo+GIF" alt="Key Features Animation">
+            </div>
+        </div>
+        <a href="/login" class="try-btn">Try JobSniffer</a>
+    </div>
+
+    <script>
+        // Theme toggle
+        const themeToggle = document.getElementById('themeToggle');
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.body.getAttribute('data-theme');
+            document.body.setAttribute('data-theme', currentTheme === 'light' ? 'dark' : 'light');
+        });
+
+        // Scroll reveal
+        const sections = document.querySelectorAll('.section');
+
+        const observerOptions = {
+            root: null,
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px"
+        };
+
+        const sectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    sectionObserver.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => {
+            sectionObserver.observe(section);
+        });
+    </script>
+</body>
+</html>
