@@ -1,0 +1,29 @@
+# Core Flask dependencies
+Flask==2.3.3
+Flask-CORS==4.0.0
+Flask-SQLAlchemy==3.0.5
+Flask-Login==0.6.2
+Werkzeug==2.3.7
+
+# OAuth dependencies (optional but recommended)
+Authlib==1.2.1
+requests==2.31.0
+
+# Database
+SQLAlchemy==2.0.21
+
+# Resume parsing dependencies
+PyPDF2==3.0.1          # For PDF parsing
+python-docx==0.8.11    # For DOCX parsing
+pdfplumber==0.10.2     # Alternative PDF parser (optional)
+
+# ATS Scraping dependencies
+beautifulsoup4==4.12.2
+lxml==4.9.3
+ollama==0.1.7          # Python client for Ollama
+
+# Environment variables
+python-dotenv==1.0.0
+
+# Additional utilities
+secure==0.3.0
