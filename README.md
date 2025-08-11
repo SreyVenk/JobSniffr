@@ -151,17 +151,21 @@ Create a `requirements.txt` file with the following dependencies:
 
 ```txt
 Flask==2.3.3
-Flask-SQLAlchemy==3.0.5
-Flask-Login==0.6.3
 Flask-CORS==4.0.0
-python-dotenv==1.0.0
+Flask-SQLAlchemy==3.0.5
+Flask-Login==0.6.2
+Werkzeug==2.3.7
+Authlib==1.2.1
 requests==2.31.0
-beautifulsoup4==4.12.2
+SQLAlchemy==2.0.21
 PyPDF2==3.0.1
 python-docx==0.8.11
-Authlib==1.2.1
-Werkzeug==2.3.7
+pdfplumber==0.10.2
+beautifulsoup4==4.12.2
+lxml==4.9.3
 ollama==0.1.7
+python-dotenv==1.0.0
+secure==0.3.0
 ```
 
 Then install:
