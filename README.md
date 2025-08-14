@@ -1,4 +1,4 @@
-# JobSniffer 👃
+# JobSniffer 
 
 ## AI-Powered Resume Parser and Job Recommendation Tool
 
@@ -6,29 +6,29 @@ JobSniffer is a cutting-edge web application that uses AI to parse resumes, extr
 
 ![JobSniffer Architecture](diagram.png)
 
-## ✨ Features
+##  Features
 
-### 🎯 Core Features
+###  Core Features
 - **AI-Powered Resume Parsing**: Extract contact info, skills, experience, and education from PDF, DOCX, and TXT files
 - **Smart Job Recommendations**: Get personalized career field matches based on your skills and experience
 - **Real-time Job Search**: Direct integration with company ATS systems (Greenhouse, Lever, Workday, etc.)
 - **Application Tracker**: Track job applications with status updates (Saved, Applied, In Progress, Rejected)
 - **Advanced Filtering**: Filter jobs by experience level, location type, posting date, and match score
 
-### 🚀 Advanced Features
+###  Advanced Features
 - **Google OAuth Integration**: Secure authentication and profile management
 - **Resume Management**: Save and manage multiple resumes with version control
 - **Interactive Job Cards**: Hover details and one-click application saving
 - **Dark/Light Theme**: Modern UI with theme switching
 - **Responsive Design**: Works seamlessly on desktop and mobile devices
 
-### 🎨 User Interface
+###  User Interface
 - **Modern Dashboard**: Clean, intuitive interface with tab-based navigation
 - **Job Details Popup**: Instant job information without page navigation
 - **Application Statistics**: Visual tracking of application progress
 - **Real-time Search**: Live job filtering and sorting
 
-## 🏗️ Architecture
+## 🏗 Architecture
 
 ```
 JobSniffer/
@@ -90,7 +90,7 @@ Before installation, ensure you have:
 - **Ollama** (for enhanced AI features)
 - **Google Cloud Console** account (for OAuth)
 
-## 🚀 Installation
+##  Installation
 
 ### 1. Clone the Repository
 
@@ -101,7 +101,7 @@ cd jobsniffer
 
 ### 2. Platform-Specific Setup
 
-#### 🍎 macOS
+####  macOS
 
 ```bash
 # Install Python (if not already installed)
@@ -115,7 +115,7 @@ source jobsniffer_env/bin/activate
 pip install -r requirements.txt
 ```
 
-#### 🐧 Linux (Ubuntu/Debian)
+####  Linux (Ubuntu/Debian)
 
 ```bash
 # Update system packages
@@ -132,7 +132,7 @@ source jobsniffer_env/bin/activate
 pip install -r requirements.txt
 ```
 
-#### 🪟 Windows
+####  Windows
 
 ```powershell
 # Using PowerShell or Command Prompt
@@ -268,7 +268,7 @@ export FLASK_ENV=production
 python app.py
 ```
 
-## 📱 Usage
+##  Usage
 
 ### 1. Initial Setup
 1. Open `http://localhost:5000` in your browser
@@ -318,7 +318,7 @@ The application uses SQLite by default. For production, consider PostgreSQL:
 DATABASE_URL=postgresql://username:password@localhost/jobsniffer
 ```
 
-## 🧪 Testing
+##  Testing
 
 ### API Testing
 Test the backend API:
@@ -337,7 +337,7 @@ curl -X POST -F "file=@sample_resume.pdf" http://localhost:5000/api/upload
 3. Verify application tracking functionality
 4. Test OAuth authentication flow
 
-## 🚨 Troubleshooting
+##  Troubleshooting
 
 ### Common Issues
 
@@ -384,7 +384,7 @@ export FLASK_ENV=development
 python app.py
 ```
 
-## 🤝 Contributing
+##  Contributing
 
 We welcome contributions! Please follow these guidelines:
 
@@ -407,11 +407,11 @@ We welcome contributions! Please follow these guidelines:
 - Test on multiple browsers and screen sizes
 - Verify database migrations work correctly
 
-## 📄 License
+##  License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+##  Acknowledgments
 
 - **Flask Community** for the excellent web framework
 - **Ollama** for local AI model integration
@@ -419,7 +419,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Google** for OAuth integration
 - **Open Source Community** for various libraries and tools
 
-## 📞 Support
+##  Support
 
 ### Documentation
 - [Flask Documentation](https://flask.palletsprojects.com/)
@@ -442,7 +442,7 @@ We welcome feature requests! Please:
 2. Search existing issues for similar requests
 3. Create a detailed feature request with use cases
 
-## 🎯 Roadmap
+##  Roadmap
 
 ### Upcoming Features
 - [ ] **Resume Builder**: Create professional resumes within the app
