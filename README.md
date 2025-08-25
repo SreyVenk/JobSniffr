@@ -49,7 +49,7 @@ JobSniffer/
 └── README.md               # This file
 ```
 
-## 🛠️ Technology Stack
+##  Technology Stack
 
 ### Backend
 - **Python 3.8+**: Core programming language
@@ -77,7 +77,7 @@ JobSniffer/
 - **Resume Parsing**: Intelligent text extraction and analysis
 - **Job Matching**: AI-powered compatibility scoring
 
-## 📋 Prerequisites
+##  Prerequisites
 
 Before installation, ensure you have:
 
@@ -237,7 +237,7 @@ Download from [ollama.ai](https://ollama.ai) and follow the installation guide.
 5. Add your domain to authorized origins
 6. Update `.env` with your credentials
 
-## 🏃‍♂️ Running the Application
+##  Running the Application
 
 ### Development Mode
 
@@ -299,7 +299,7 @@ python app.py
 - View job description, requirements, benefits, and company info
 - One-click application links to company career pages
 
-## 🔧 Configuration
+##  Configuration
 
 ### File Upload Limits
 ```python
