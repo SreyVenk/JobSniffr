@@ -407,9 +407,6 @@ We welcome contributions! Please follow these guidelines:
 - Test on multiple browsers and screen sizes
 - Verify database migrations work correctly
 
-##  License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ##  Acknowledgments
 
