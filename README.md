@@ -464,7 +464,3 @@ We welcome feature requests! Please:
 - [ ] **Mobile App**: React Native or Flutter mobile application
 
 ---
-
-**Built with ❤️ by [Your Name]**
-
-*JobSniffer - Making job hunting smarter, one resume at a time.*
