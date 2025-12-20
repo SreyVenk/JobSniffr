@@ -28,7 +28,7 @@ JobSniffer is a cutting-edge web application that uses AI to parse resumes, extr
 - **Application Statistics**: Visual tracking of application progress
 - **Real-time Search**: Live job filtering and sorting
 
-## 🏗 Architecture
+## Architecture
 
 ```
 JobSniffer/
