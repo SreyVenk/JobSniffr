@@ -1,5 +1,4 @@
 import os
-import json
 import logging
 from datetime import datetime
 
@@ -22,6 +21,8 @@ google = None
 oauth_enabled = False
 
 
+# ------------------- APP SETUP -------------------
+
 def create_app():
     app = Flask(__name__)
 
@@ -31,7 +32,7 @@ def create_app():
 
     cors_origins = os.getenv(
         "CORS_ORIGINS",
-        "http://localhost:5000,https://your-app.onrender.com"
+        "http://localhost:5000,https://jobsniffr.onrender.com"
     ).split(",")
 
     CORS(app, origins=cors_origins, supports_credentials=True)
@@ -49,6 +50,8 @@ def create_app():
     return app
 
 
+# ------------------- OAUTH -------------------
+
 def configure_oauth(app):
     global oauth, google, oauth_enabled
 
@@ -56,50 +59,35 @@ def configure_oauth(app):
     google_client_secret = os.getenv("GOOGLE_CLIENT_SECRET")
 
     if not google_client_id or not google_client_secret:
-        logger.warning("⚠️ Google OAuth not configured")
         return
 
-    try:
-        from authlib.integrations.flask_client import OAuth
+    from authlib.integrations.flask_client import OAuth
 
-        oauth = OAuth(app)
+    oauth = OAuth(app)
 
-        google = oauth.register(
-            name="google",
-            client_id=google_client_id,
-            client_secret=google_client_secret,
-            server_metadata_url="https://accounts.google.com/.well-known/openid-configuration",
-            client_kwargs={
-                "scope": "openid email profile",
-                "prompt": "select_account",
-            },
-        )
+    google = oauth.register(
+        name="google",
+        client_id=google_client_id,
+        client_secret=google_client_secret,
+        server_metadata_url="https://accounts.google.com/.well-known/openid-configuration",
+        client_kwargs={
+            "scope": "openid email profile",
+            "prompt": "select_account",
+        },
+    )
 
-        oauth_enabled = True
-        logger.info("✅ Google OAuth enabled")
-
-    except Exception as e:
-        logger.error(f"❌ OAuth setup failed: {e}")
+    oauth_enabled = True
 
 
 # ------------------- MODELS -------------------
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    name = db.Column(db.String(100), nullable=False)
-    avatar_url = db.Column(db.String(300))
+    email = db.Column(db.String(120), unique=True)
+    name = db.Column(db.String(100))
     google_id = db.Column(db.String(120), unique=True)
+    avatar_url = db.Column(db.String(300))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    last_login = db.Column(db.DateTime, default=datetime.utcnow)
-
-    def to_dict(self):
-        return {
-            "id": self.id,
-            "email": self.email,
-            "name": self.name,
-            "avatar_url": self.avatar_url
-        }
 
 
 @login_manager.user_loader
@@ -117,8 +105,6 @@ def register_routes(app):
 
     @app.route("/login")
     def login():
-        if current_user.is_authenticated:
-            return redirect(url_for("dashboard"))
         return render_template("login.html")
 
     @app.route("/dashboard")
@@ -126,82 +112,64 @@ def register_routes(app):
     def dashboard():
         return render_template("dashboard.html")
 
-    # ---------------- AUTH ----------------
+    # -------- GOOGLE AUTH --------
 
     @app.route("/auth/google")
     def google_auth():
-        if not google:
-            return jsonify({"success": False, "error": "OAuth not configured"}), 400
-
         redirect_uri = url_for("google_callback", _external=True)
         return google.authorize_redirect(redirect_uri)
 
     @app.route("/auth/google/callback")
     def google_callback():
-        if not google:
-            return jsonify({"success": False, "error": "OAuth not configured"}), 400
+        token = google.authorize_access_token()
+        user_info = token.get("userinfo") or google.parse_id_token(token)
 
-        try:
-            token = google.authorize_access_token()
-            user_info = token.get("userinfo")
+        google_id = user_info.get("sub")
+        email = user_info.get("email")
+        name = user_info.get("name")
 
-            if not user_info:
-                user_info = google.parse_id_token(token)
+        user = User.query.filter_by(google_id=google_id).first()
 
-            google_id = user_info.get("sub")
-            email = user_info.get("email")
-            name = user_info.get("name", email)
-            picture = user_info.get("picture")
+        if not user:
+            user = User(email=email, name=name, google_id=google_id)
+            db.session.add(user)
 
-            if not google_id or not email:
-                return jsonify({
-                    "success": False,
-                    "error": "Google did not return required user info"
-                }), 400
+        db.session.commit()
+        login_user(user)
 
-            user = User.query.filter_by(google_id=google_id).first()
-
-            if not user:
-                user = User(
-                    email=email,
-                    name=name,
-                    google_id=google_id,
-                    avatar_url=picture,
-                )
-                db.session.add(user)
-            else:
-                user.name = name
-                user.avatar_url = picture
-                user.last_login = datetime.utcnow()
-
-            db.session.commit()
-            login_user(user)
-
-            return redirect(url_for("dashboard"))
-
-        except Exception as e:
-            logger.exception("OAuth failed")
-            return jsonify({"success": False, "error": str(e)}), 400
+        return redirect(url_for("dashboard"))
 
     @app.route("/logout")
     def logout():
         logout_user()
-        return redirect(url_for("login"))
+        return redirect("/login")
 
-    # ---------------- API ----------------
-
-    @app.route("/api/user")
-    def get_user():
-        if current_user.is_authenticated:
-            return jsonify({"success": True, "user": current_user.to_dict()})
-        return jsonify({"success": False}), 401
+    # -------- API --------
 
     @app.route("/api/test")
     def test():
         return jsonify({
             "success": True,
-            "oauth_enabled": oauth_enabled,
-            "timestamp": datetime.utcnow().isoformat()
+            "database_info": {
+                "total_resumes": 0
+            }
+        })
+
+    @app.route("/api/upload", methods=["POST"])
+    @login_required
+    def upload():
+        if "file" not in request.files:
+            return jsonify({"success": False, "error": "No file uploaded"}), 400
+
+        file = request.files["file"]
+
+        return jsonify({
+            "success": True,
+            "message": "File received",
+            "filename": file.filename,
+            "database_info": {
+                "total_resumes": 1
+            }
         })
 
 
@@ -210,8 +178,4 @@ def register_routes(app):
 app = create_app()
 
 if __name__ == "__main__":
-    app.run(
-        host="0.0.0.0",
-        port=int(os.getenv("PORT", 5000)),
-        debug=os.getenv("FLASK_ENV") == "development"
-    )
+    app.run(host="0.0.0.0", port=5000)
