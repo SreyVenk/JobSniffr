@@ -1,4 +1,4 @@
-# Job Intelligence Platform
+# JobSniffr
 
 A full-stack web application that analyzes resumes, scrapes real job listings, ranks job matches, and provides skill gap insights using local LLMs.
 
