@@ -117,7 +117,14 @@ def register_routes(app):
     def index():
         return render_template("index.html")
 
+    @app.route("/login")
+    def login():
+        if current_user.is_authenticated:
+            return redirect(url_for("dashboard"))
+        return render_template("login.html")
+
     @app.route("/dashboard")
+    @login_required
     def dashboard():
         return render_template("dashboard.html")
 
@@ -160,7 +167,7 @@ def register_routes(app):
             db.session.commit()
             login_user(user)
 
-            return redirect("/dashboard")
+            return redirect(url_for("dashboard"))
 
         except Exception as e:
             logger.exception("OAuth failed")
@@ -169,7 +176,7 @@ def register_routes(app):
     @app.route("/logout")
     def logout():
         logout_user()
-        return redirect("/")
+        return redirect(url_for("login"))
 
     # ---------------- API ----------------
 
