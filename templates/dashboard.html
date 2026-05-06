@@ -1792,6 +1792,14 @@
 
                 <div class="job-filters">
                     <div class="filter-group">
+                        <label for="country-filter">Location Scope:</label>
+                        <select id="country-filter" onchange="applyFilters()">
+                            <option value="">All Jobs</option>
+                            <option value="us">United States Only</option>
+                            <option value="international">International Only</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
                         <label for="experience-filter">Experience Level:</label>
                         <select id="experience-filter" onchange="applyFilters()">
                             <option value="">All Levels</option>

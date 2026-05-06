@@ -510,37 +510,54 @@ class JobRecommendationService:
         self.cache.set(params, final_jobs)
         return final_jobs
 
-    def apply_filters(self, jobs, experience_level=None, location_type=None):
+    def apply_filters(self, jobs, experience_level=None, location_type=None, country_filter=None):
         filtered = jobs
 
+        # Experience filter
         if experience_level:
             filtered = [
-                job for job in filtered if job.get("experience_level") == experience_level
+                job for job in filtered
+                if job.get("experience_level") == experience_level
             ]
 
+        # Remote / hybrid / onsite
         if location_type:
             location_type_lower = location_type.lower()
 
             if location_type_lower == "remote":
                 filtered = [
-                    job
-                    for job in filtered
+                    job for job in filtered
                     if "remote" in job.get("location", "").lower()
-                    or "remote" in job.get("remote_type", "").lower()
+                       or "remote" in job.get("remote_type", "").lower()
                 ]
+
             elif location_type_lower == "hybrid":
                 filtered = [
-                    job
-                    for job in filtered
+                    job for job in filtered
                     if "hybrid" in job.get("location", "").lower()
-                    or "hybrid" in job.get("remote_type", "").lower()
+                       or "hybrid" in job.get("remote_type", "").lower()
                 ]
+
             elif location_type_lower == "onsite":
                 filtered = [
-                    job
-                    for job in filtered
+                    job for job in filtered
                     if "remote" not in job.get("location", "").lower()
-                    and "remote" not in job.get("remote_type", "").lower()
+                ]
+
+        # 🔥 NEW: Country filter
+        if country_filter:
+            country_filter = country_filter.lower()
+
+            if country_filter == "us":
+                filtered = [
+                    job for job in filtered
+                    if "united states" in job.get("location", "").lower()
+                ]
+
+            elif country_filter == "international":
+                filtered = [
+                    job for job in filtered
+                    if "international" in job.get("location", "").lower()
                 ]
 
         return filtered
