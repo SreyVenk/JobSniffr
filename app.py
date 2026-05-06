@@ -68,12 +68,10 @@ def configure_oauth(app):
             name="google",
             client_id=google_client_id,
             client_secret=google_client_secret,
-            access_token_url="https://oauth2.googleapis.com/token",
-            authorize_url="https://accounts.google.com/o/oauth2/v2/auth",
-            api_base_url="https://www.googleapis.com/oauth2/v2/",
+            server_metadata_url="https://accounts.google.com/.well-known/openid-configuration",
             client_kwargs={
                 "scope": "openid email profile",
-                "prompt": "select_account"
+                "prompt": "select_account",
             },
         )
 
@@ -145,23 +143,35 @@ def register_routes(app):
 
         try:
             token = google.authorize_access_token()
+            user_info = token.get("userinfo")
 
-            resp = google.get("userinfo")
-            user_info = resp.json()
+            if not user_info:
+                user_info = google.parse_id_token(token)
 
-            user = User.query.filter_by(google_id=user_info["id"]).first()
+            google_id = user_info.get("sub")
+            email = user_info.get("email")
+            name = user_info.get("name", email)
+            picture = user_info.get("picture")
+
+            if not google_id or not email:
+                return jsonify({
+                    "success": False,
+                    "error": "Google did not return required user info"
+                }), 400
+
+            user = User.query.filter_by(google_id=google_id).first()
 
             if not user:
                 user = User(
-                    email=user_info["email"],
-                    name=user_info.get("name", user_info["email"]),
-                    google_id=user_info["id"],
-                    avatar_url=user_info.get("picture"),
+                    email=email,
+                    name=name,
+                    google_id=google_id,
+                    avatar_url=picture,
                 )
                 db.session.add(user)
             else:
-                user.name = user_info.get("name", user.name)
-                user.avatar_url = user_info.get("picture")
+                user.name = name
+                user.avatar_url = picture
                 user.last_login = datetime.utcnow()
 
             db.session.commit()
